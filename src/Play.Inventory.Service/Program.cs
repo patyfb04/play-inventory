@@ -5,6 +5,7 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Serializers;
 using Play.Common.Identity;
 using Play.Common.MassTransit;
+using Play.Common.Messaging;
 using Play.Common.Repositories;
 using Play.Common.Settings;
 using Play.Inventory.Service.Clients;
@@ -31,8 +32,17 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
-builder.Services.Configure<MongoDbSettings>(
-    builder.Configuration.GetSection(nameof(MongoDbSettings)));
+builder.Configuration
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true)
+    .AddEnvironmentVariables()
+    .AddUserSecrets<Program>(optional: true);
+
+builder.Services.Configure<CosmosDbSettings>(
+    builder.Configuration.GetSection(nameof(CosmosDbSettings)));
+
+builder.Services.Configure<ServiceBusSettings>(
+    builder.Configuration.GetSection(nameof(ServiceBusSettings)));
 
 builder.Services.Configure<ServiceSettings>(
     builder.Configuration.GetSection(nameof(ServiceSettings)));
@@ -45,10 +55,11 @@ builder.Services.Configure<ClientServicesSettings>(
 
 builder.Services.AddSingleton<InventoryCatalogSyncService>();
 
-builder.Services.AddMongoDb()
-    .AddMongoRepository<InventoryItem>("inventoryitems")
-    .AddMongoRepository<CatalogItem>("catalogitems")
-    .AddMassTransitWithRabbitMq()
+builder.Services
+    .AddCosmosDb()
+    .AddCosmosRepository<InventoryItem>("inventoryitems")
+    .AddCosmosRepository<CatalogItem>("catalogitems")
+    .AddMassTransitWithAzureServiceBus()
     .AddJwtBearerAuthentication();
 
 // register token provider and handler for outgoing client calls
