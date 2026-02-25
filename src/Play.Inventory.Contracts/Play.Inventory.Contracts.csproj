@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <PackageId>Play.Inventory.Contracts</PackageId>
+	  <PackageVersion>1.0.1</PackageVersion>
+	  <Authors>patyfb04</Authors>
+	  <RepositoryUrl>https://github.com/patyfb04/microservice</RepositoryUrl>
+	  <PackageDescription>inventory contracts</PackageDescription>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

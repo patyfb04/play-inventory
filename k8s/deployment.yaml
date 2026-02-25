@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: play-inventory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: play-inventory
+  template:
+    metadata:
+      labels:
+        app: play-inventory
+    spec:
+      serviceAccountName: play-inventory-sa
+      containers:
+        - name: play-inventory
+          image: playeconomyapp.azurecr.io/play-inventory:v1
+
+          # IMPORTANT: Clear any previous overrides like "sleep 3600"
+          command: []
+          args: []
+
+          # Your app listens on port 5000, not 80
+          ports:
+            - containerPort: 5000
+
+          env:
+            # Force ASP.NET Core to listen on port 5000
+            - name: ASPNETCORE_URLS
+              value: "http://+:5000"
+
+            # Cosmos DB connection string from Kubernetes Secret
+            - name: CosmosDbSettings__ConnectionString
+              valueFrom:
+                secretKeyRef:
+                  name: cosmosdb-connection
+                  key: CosmosDbSettings__ConnectionString
+
+            # Database name (safe to hardcode)
+            - name: CosmosDbSettings__DatabaseName
+              value: "Catalog"
+
+            # Service Bus namespace (Managed Identity)
+            - name: ServiceBusSettings__FullyQualifiedNamespace
+              value: "sb://playeconomy-servicebus.servicebus.windows.net"
+
+            # MassTransit retry settings
+            - name: MassTransitSettings__Retries
+              value: "3"
+            - name: MassTransitSettings__TimeIntervalInSeconds
+              value: "5"
+
+            # Identity service URL (internal)
+            - name: ServiceSettings__Authority
+              value: "https://play-identity"
+
+            # Frontend origin (internal)
+            - name: AllowedOrigin
+              value: "http://play-frontend"
+
+            # Service name for endpoint naming
+            - name: ServiceSettings__ServiceName
+              value: "play-inventory"
