@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: play-catalog
+  name: play-inventory
 spec:
   type: LoadBalancer
   selector:
-    app: play-catalog
+    app: play-inventory
   ports:
     - protocol: TCP
       port: 80
