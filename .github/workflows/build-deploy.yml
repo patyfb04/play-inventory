@@ -33,7 +33,7 @@ jobs:
 
           az acr build \
             --registry $ACR_NAME \
-            --image $IMAGE_NAME:latest \
+            --image $IMAGE_NAME:v2 \
             --image $IMAGE_NAME:$IMAGE_TAG \
             --build-arg GITHUB_TOKEN=${{ secrets.PAT_GITHUB_TOKEN }} \
             .

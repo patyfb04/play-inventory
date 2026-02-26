@@ -15,7 +15,7 @@ spec:
       serviceAccountName: play-inventory-sa
       containers:
         - name: play-inventory
-          image: playeconomyapp.azurecr.io/play-inventory:v1
+          image: playeconomyapp.azurecr.io/play-inventory:IMAGE_TAG_PLACEHOLDER
 
           # IMPORTANT: Clear any previous overrides like "sleep 3600"
           command: []
